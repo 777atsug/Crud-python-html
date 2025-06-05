@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-mode {
+      background-color: #1e1e1e;
+      color: #e4e4e4;
+    }
+
+    .header {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #2d3238;
+      min-height: 100vh;
+      padding-top: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #007bff;
+    }
+
+    .main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dark-mode .card {
+      background: #2c2c2c;
+      color: #e4e4e4;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      flex: 1;
+      min-width: 200px;
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .logout-btn, .toggle-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-left: 10px;
+    }
+
+    .toggle-btn {
+      background-color: #6c757d;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+    }
+
+    .toggle-btn:hover {
+      background-color: #5a6268;
+    }
+    #listaDashboardProdutos {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+#listaDashboardProdutos li {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: background 0.2s;
+}
+
+#listaDashboardProdutos li:hover {
+  background-color: #eef2f5;
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div><strong>Painel Administrativo</strong></div>
+    <div>
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌙 Alternar Tema</button>
+      <button class="logout-btn" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <a href="dashboard_produtos.html">📦 Adicionar Produtos</a>
+      <a href="usuarios.html">👥 Gerenciar Usuários</a>
+    </div>
+
+    <div class="main">
+       <div class="card">
+        <h3>Bem-vindo!</h3>
+        <p>Use a barra lateral para navegar entre as funcionalidades administrativas.</p>
+      </div>
+      <div class="stats">
+       <div class="stat-box">
+          <h3 id="contagemProdutos">0</h3>
+          <p>Produtos adicionados</p>
+      </div>
+      </div>
+      <div class="card">
+  <h3>Produtos Cadastrados</h3>
+  <ul id="listaDashboardProdutos" style="margin-top: 15px;"></ul>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+async function carregarProdutosDashboard() {
+  try {
+    const res = await fetch("http://localhost:5000/produtos", {
+      credentials: "include"
+    });
+    const produtos = await res.json();
+
+    // Atualiza a contagem no card
+    document.getElementById("contagemProdutos").innerText = produtos.length;
+
+    // Preenche a lista detalhada
+    const lista = document.getElementById("listaDashboardProdutos");
+    lista.innerHTML = "";
+
+    if (produtos.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "Nenhum produto cadastrado ainda.";
+      lista.appendChild(li);
+    } else {
+      produtos.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = `${p.nome} - R$ ${p.preco.toFixed(2)}`;
+        li.style.padding = "6px 0";
+        lista.appendChild(li);
+      });
+    }
+
+  } catch (err) {
+    console.error("Erro ao buscar produtos:", err);
+  }
+}
+
+function logout() {
+  fetch('http://localhost:5000/logout')
+    .then(() => window.location.href = 'index.html');
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+}
+
+carregarProdutosDashboard();
+</script>
+
+
+</body>
+</html>
