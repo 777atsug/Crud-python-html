@@ -1,0 +1,32 @@
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.env
+*.bak
+.DS_Store
+.env/
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VSCode
+.vscode/
+
+# Front-end
+node_modules/
+dist/
+build/
+
+# Sistema
+Thumbs.db
+ehthumbs.db
+Desktop.ini
